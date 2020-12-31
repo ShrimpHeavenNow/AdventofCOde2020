@@ -1,0 +1,9 @@
+data = open('nums.txt')
+numbers = []
+for x in data:
+    numbers.append(int(x))
+for x in numbers:
+    for y in numbers:
+        if x + y == 2020:
+            solution = x*y
+print(solution)
