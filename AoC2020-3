@@ -1,0 +1,36 @@
+with open('trees.txt') as f:
+    map = [line.rstrip() for line in f]
+location = [0, 0]
+map_width = 32
+x_move = 3
+y_move = 1
+tree_hits = 0
+finish = len(map)
+print(finish)
+
+tree_line = map[0]  # Find starting location
+x_position = 0
+for x in tree_line:
+    if x == ".":
+        break
+    x_position += 1
+location[0] = x_position
+
+while location[1] < finish:  # Moves if we're not on the bottom line.
+    if location[0] + x_move > 31:
+        print("time to scroll")
+        location[0] = location[0] - 31
+    location[0] = int(location[0]) + x_move
+    location[1] = int(location[1]) + y_move
+    tree_line = map[location[1]]
+    print(tree_line)
+    print(location[0])
+    x_position = location[0]
+    print(len(tree_line))
+    terrain = tree_line[x_position]
+    if terrain == "#":
+        tree_hits += 1
+    print(location[1])
+    print(tree_hits)
+print("We've made it alive!")
+print("We only hit " + str(tree_hits) + " trees!")
