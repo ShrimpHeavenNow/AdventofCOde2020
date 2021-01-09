@@ -14,8 +14,8 @@ def parser(x):
     """Returns bag object with it's name and bags it has inside."""
     contains = {}
     rule = x[:-1]  # Get rid of the period at the end.
-    rule = rule.split("contain")
-    color = rule[0][:-6]
+    rule = rule.split(" bags contain ")
+    color = rule[0]
     contents = rule[1].strip().split(",")
     for x in range(len(contents)):
         contents[x] = contents[x].strip()
@@ -23,7 +23,7 @@ def parser(x):
             contains = {}
             return bag(color, contains)
         count = int(contents[x][:1])
-        name = contents[x][2:].strip("bag").strip("bags").strip()
+        name = contents[x][1:].strip("bag").strip("bags").strip()
         contains[name] = count
     return bag(color, contains)
 
@@ -33,46 +33,41 @@ def parents(bags):  # Could this be a function in the bag class?
     for bag in bags:
         for x in bag.inside:
             containers[x].append(bag.name)
-
-    print(containers)
-    print(containers)
     return containers
 
 def count_bags(bags, bag_name):
     parent_map = parents(bags)
     check_me = [bag_name]
     can_contain = set()
-    print(parent_map)
     while check_me:
         child = check_me.pop()
-        for x in parent_map:
-            print([x])
-            # fart = x.get(child, [])
-            # if x not in can_contain:
-            #     can_contain.add(fart[0])
-            #     check_me.append(fart[1])
+        for x in parent_map.get(child, []):
+            if x not in can_contain:
+                can_contain.add(x)
+                check_me.append(x)
     return can_contain
+
+def bag_amount (bags, bag_name, count):
+    for x in bags:
+        if x.name == bag_name:
+            print(x.name)
+            print(x.inside)
+            for y in list(x.inside.values()):
+                count += y
+            print(count)
+            for y in list(x.inside.keys()):  #Ah, also I need to do it for the amount of instances.
+                print(y)
+                for z in range(0,x.inside.get(y)):
+                    count = bag_amount(bags, y, count)
+
+    return count
 
 
 
 bags = [parser(x) for x in rules]
-print(len(count_bags(bags, "shiny gold")))
+# print(len(count_bags(bags, "shiny gold")))
 
-# count_bags(bags, "shiny gold  ")
-
-
+print(bag_amount(bags, "shiny gold", 0))
 
 
 
-
-
-
-
-
-"""
-Cool, you've parsed it out... now what?
-
-so we need to make and check every bag as a tree to see if "shiny gold" is in the tree somewhere.
-we could convert the contains dict into a list and easily make children that way. 
-Right now the amount of bags doesn't matter, but I'm sure it will later...
-"""
